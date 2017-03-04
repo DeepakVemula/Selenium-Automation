@@ -1,0 +1,98 @@
+package redBus;
+
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Proxy.ProxyType;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.interactions.Actions;
+
+public class Search_Refactor {
+
+	public static void main(String[] args) throws Exception {
+		
+		
+			FirefoxProfile ffProfile = new FirefoxProfile();
+			ffProfile.setPreference("dom.webnotifications.enabled", false);
+			ffProfile.setPreference("network.proxy.type", ProxyType.AUTODETECT.ordinal()); 
+			WebDriver driver = new FirefoxDriver(ffProfile);
+			driver.manage().window().maximize();
+			driver.get("https://www.redbus.in/");
+			driver.findElement(By.xpath("//label[text()='FROM']")).sendKeys("Pune");
+			Thread.sleep(2000);
+			Actions act1 = new Actions(driver);
+			WebElement from = driver.findElement(By.xpath("//li[text()='Pune']"));
+			act1.moveToElement(from).click().build().perform();
+			driver.findElement(By.xpath("//label[text()='TO']")).sendKeys("Hyderabad");
+			Thread.sleep(2000);
+			WebElement to = driver.findElement(By.xpath("//li[text()='Hyderabad']"));
+			act1.moveToElement(to).click().build().perform();
+			driver.findElement(By.xpath("//label[text()='Onward Date']")).click();
+			Thread.sleep(2000);
+			
+			List<WebElement> dates = driver.findElements(By.xpath(".//*[@id='rb-calendar_onward_cal']//td"));
+			
+			int count = dates.size();
+			for(int i=0;i< count; i++){
+			String d = dates.get(i).getText();
+				if(d.equalsIgnoreCase("27")){
+					dates.get(i).click();
+					break;
+				}
+			}
+			driver.findElement(By.xpath(".//*[@id='search_btn']")).click();
+			Thread.sleep(3000);
+			
+			List<WebElement> BusName = driver.findElements(By.xpath("//div[@class='service-name']"));
+			List<WebElement> BusService = driver.findElements(By.xpath("//div[@class='service-type']"));
+			List<WebElement> BusDeparture = driver.findElements(By.xpath("//div[@class='fl depart']"));
+			List<WebElement> BusArrival = driver.findElements(By.xpath("//div[@class='fl arrive']"));
+			//List<WebElement> BusRating = driver.findElements(By.xpath("//div[contains(@class,'rating fl')]"));
+			List<WebElement> BusSeats = driver.findElements(By.xpath("//span[@class='tot-seats']"));
+			List<WebElement> BusFare = driver.findElements(By.xpath("//div[@class='fare']"));
+			
+			int size = BusName.size();
+			System.out.println(size);
+			String busName[]= new String[size];
+			String busService[]= new String[size];
+			String busDeparture[]= new String[size];
+			String busArrival[]= new String[size];
+			//String busRating[]= new String[size];
+			String busSeats[]= new String[size];
+			String busFare[]= new String[size];
+						
+			try{
+				
+				for(int v=0; v<size; v++){
+					
+					busName[v]=BusName.get(v).getText();
+					busService[v]= BusService.get(v).getText();
+					busDeparture[v]= BusDeparture.get(v).getText();
+					busArrival[v]= BusArrival.get(v).getText();
+					//busRating[v]= BusRating.get(v).getText();
+					busSeats[v]= BusSeats.get(v).getText();
+					busFare[v]= BusFare.get(v).getText();
+					
+				}
+				
+			}
+			
+			catch(Exception e){
+				
+				e.getMessage();
+				
+			}
+			
+			
+			System.out.println("Bus Name"+"\t\t"+"Service"+"\t\t"+"Departure to Arrival"+"\t\t"+"Bus Rating"+"\t\t"+"Bus Seats"+"\t\t"+"Bus Fare");
+
+			for(int q=0;q<size;q++){
+			System.out.println(busName[q]+"\t\t"+ busService[q]+"\t\t"+busDeparture[q]+" to "+busArrival[q]+"\t\t"+busSeats[q]+"\t\t"+busFare[q]);
+			}
+
+	}
+
+}
